@@ -1,0 +1,195 @@
+-- [[ LOST CLAN SYSTEM: COMPACT TRACKER ]] --
+-- Developer: Mohannad
+
+local Player = game.Players.LocalPlayer
+local MafiaScreen = Instance.new("ScreenGui")
+MafiaScreen.Name = "LOST_CLAN_Final"
+MafiaScreen.Parent = game:GetService("CoreGui")
+MafiaScreen.ResetOnSpawn = false
+
+-----------------------------------------------------------
+-- [ 1. الواجهة الرئيسية ]
+-----------------------------------------------------------
+local MainFrame = Instance.new("Frame")
+local ToggleBtn = Instance.new("TextButton")
+
+MainFrame.Visible = true
+MainFrame.Size = UDim2.new(0, 500, 0, 340)
+MainFrame.Position = UDim2.new(0.5, -250, 0.5, -170)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BackgroundTransparency = 0.15
+MainFrame.Parent = MafiaScreen
+MainFrame.Active = true
+MainFrame.Draggable = true 
+
+local MainCorner = Instance.new("UICorner", MainFrame)
+MainCorner.CornerRadius = UDim.new(0, 20)
+
+local MainStroke = Instance.new("UIStroke", MainFrame)
+MainStroke.Color = Color3.fromRGB(255, 255, 255)
+MainStroke.Transparency = 0.8
+MainStroke.Thickness = 1.5
+
+ToggleBtn.Visible = true
+ToggleBtn.Size = UDim2.new(0, 90, 0, 40)
+ToggleBtn.Position = UDim2.new(0.02, 0, 0.45, 0)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ToggleBtn.BackgroundTransparency = 0.3
+ToggleBtn.Text = "LOST"
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.Parent = MafiaScreen
+ToggleBtn.Draggable = true
+
+Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", ToggleBtn).Color = Color3.fromRGB(255, 255, 255)
+
+local Title = Instance.new("TextLabel", MainFrame)
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.Position = UDim2.new(0, 0, 0.02, 0)
+Title.Text = "LOST CLAN TRACKER"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 14
+
+local SamlaTimer = Instance.new("TextLabel", MainFrame)
+SamlaTimer.Size = UDim2.new(1, 0, 0, 45)
+SamlaTimer.Position = UDim2.new(0, 0, 0.1, 0)
+SamlaTimer.Text = "00:00:00"
+SamlaTimer.TextColor3 = Color3.fromRGB(255, 255, 255)
+SamlaTimer.BackgroundTransparency = 1
+SamlaTimer.Font = Enum.Font.GothamBold
+SamlaTimer.TextSize = 35
+
+local InputContainer = Instance.new("Frame", MainFrame)
+InputContainer.Size = UDim2.new(0.9, 0, 0, 45)
+InputContainer.Position = UDim2.new(0.05, 0, 0.26, 0)
+InputContainer.BackgroundTransparency = 1
+
+local TargetInput = Instance.new("TextBox", InputContainer)
+TargetInput.Size = UDim2.new(0.7, -10, 0, 35)
+TargetInput.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TargetInput.BackgroundTransparency = 0.9
+TargetInput.PlaceholderText = "اسم الضحية..."
+TargetInput.Text = ""
+TargetInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+TargetInput.Font = Enum.Font.Gotham
+Instance.new("UICorner", TargetInput)
+
+local ConfirmBtn = Instance.new("TextButton", InputContainer)
+ConfirmBtn.Size = UDim2.new(0.3, 0, 0, 35)
+ConfirmBtn.Position = UDim2.new(0.7, 0, 0, 0)
+ConfirmBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ConfirmBtn.BackgroundTransparency = 0.8
+ConfirmBtn.Text = "تأكيد"
+ConfirmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ConfirmBtn.Font = Enum.Font.GothamBold
+Instance.new("UICorner", ConfirmBtn)
+
+local LogFrame = Instance.new("ScrollingFrame", MainFrame)
+LogFrame.Size = UDim2.new(0.9, 0, 0.52, 0)
+LogFrame.Position = UDim2.new(0.05, 0, 0.42, 0)
+LogFrame.BackgroundTransparency = 1
+LogFrame.ScrollBarThickness = 2
+LogFrame.CanvasSize = UDim2.new(0, 0, 2, 0)
+local LogLayout = Instance.new("UIListLayout", LogFrame)
+LogLayout.Padding = UDim.new(0, 10)
+
+-----------------------------------------------------------
+-- [ البرمجة والمنطق ]
+-----------------------------------------------------------
+local trackedPlayers = {} 
+local joinCounts = {} 
+local leaveCounts = {} 
+
+local function UpdateLogUI(playerName, status, userId)
+    for _, v in pairs(LogFrame:GetChildren()) do
+        if v:IsA("Frame") and v.Name == playerName then v:Destroy() end
+    end
+    local entry = Instance.new("Frame", LogFrame)
+    entry.Name = playerName
+    entry.Size = UDim2.new(1, -5, 0, 60)
+    entry.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    entry.BackgroundTransparency = 0.92
+    Instance.new("UICorner", entry).CornerRadius = UDim.new(0, 12)
+
+    local pImage = Instance.new("ImageLabel", entry)
+    pImage.Size = UDim2.new(0, 45, 0, 45)
+    pImage.Position = UDim2.new(0.02, 0, 0.12, 0)
+    pImage.Image = game:GetService("Players"):GetUserThumbnailAsync(userId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420)
+    pImage.BackgroundTransparency = 1
+    Instance.new("UICorner", pImage).CornerRadius = UDim.new(1, 0)
+
+    local pInfo = Instance.new("TextLabel", entry)
+    pInfo.Size = UDim2.new(0.6, 0, 1, 0)
+    pInfo.Position = UDim2.new(0.18, 5, 0, 0)
+    local stateText = status == "متصل" and "🟢" or "🔴"
+    
+    pInfo.Text = playerName .. " " .. stateText .. "\nدخول: " .. (joinCounts[userId] or 0) .. " | خروج: " .. (leaveCounts[userId] or 0)
+    pInfo.TextColor3 = Color3.fromRGB(255, 255, 255)
+    pInfo.BackgroundTransparency = 1
+    pInfo.Font = Enum.Font.GothamSemibold
+    pInfo.TextSize = 12
+    pInfo.TextXAlignment = Enum.TextXAlignment.Left
+
+    if status == "متصل" then
+        local pCounter = Instance.new("TextLabel", entry)
+        pCounter.Size = UDim2.new(0.25, 0, 1, 0)
+        pCounter.Position = UDim2.new(0.75, 0, 0, 0)
+        pCounter.BackgroundTransparency = 1
+        pCounter.TextColor3 = Color3.fromRGB(255, 255, 255)
+        pCounter.Font = Enum.Font.Code
+        pCounter.TextSize = 13
+        local pStart = os.time()
+        task.spawn(function()
+            while entry.Parent and status == "متصل" do
+                local d = os.time() - pStart
+                pCounter.Text = string.format("%02d:%02d:%02d", math.floor(d/3600), math.floor((d%3600)/60), d%60)
+                task.wait(1)
+            end
+        end)
+    end
+end
+
+-- تشغيل عداد الوقت الرئيسي
+local start = os.time()
+task.spawn(function()
+    while task.wait(1) do
+        local d = os.time() - start
+        SamlaTimer.Text = string.format("%02d:%02d:%02d", math.floor(d/3600), math.floor((d%3600)/60), d%60)
+    end
+end)
+
+-- المنطق الجديد لزر التأكيد
+ConfirmBtn.MouseButton1Click:Connect(function()
+    local text = TargetInput.Text:lower()
+    for _, p in pairs(game.Players:GetPlayers()) do
+        if p.Name:lower():match(text) then
+            trackedPlayers[p.UserId] = p.Name
+            
+            -- عند الضغط على تأكيد، نزيد عداد الخروج مباشرة
+            leaveCounts[p.UserId] = (leaveCounts[p.UserId] or 0) + 1
+            
+            -- تحديث الواجهة فوراً لتظهر النتيجة
+            UpdateLogUI(p.Name, "متصل", p.UserId)
+            break
+        end
+    end
+end)
+
+game.Players.PlayerAdded:Connect(function(p)
+    if trackedPlayers[p.UserId] then
+        joinCounts[p.UserId] = (joinCounts[p.UserId] or 0) + 1
+        UpdateLogUI(p.Name, "متصل", p.UserId)
+    end
+end)
+
+game.Players.PlayerRemoving:Connect(function(p)
+    if trackedPlayers[p.UserId] then
+        leaveCounts[p.UserId] = (leaveCounts[p.UserId] or 0) + 1
+        UpdateLogUI(p.Name, "خرج", p.UserId)
+    end
+end)
+
+ToggleBtn.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
