@@ -1,0 +1,331 @@
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+
+local parentTarget = (gethui and gethui()) or (pcall(function() return CoreGui.Name end) and CoreGui) or Players.LocalPlayer:WaitForChild("PlayerGui")
+
+if parentTarget:FindFirstChild("SlanderSystemGUI") then
+    parentTarget.SlanderSystemGUI:Destroy()
+end
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "SlanderSystemGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = parentTarget
+
+local function formatTime(seconds)
+    local h = math.floor(seconds / 3600)
+    local m = math.floor((seconds % 3600) / 60)
+    local s = math.floor(seconds % 60)
+    return string.format("%02dH %02dm %02ds", h, m, s)
+end
+
+-- 1. زر التحكم الرئيسي
+local masterToggleBtn = Instance.new("TextButton")
+masterToggleBtn.Name = "MasterToggle"
+masterToggleBtn.Size = UDim2.new(0, 190, 0, 32)
+masterToggleBtn.Position = UDim2.new(1, -200, 0, 10)
+masterToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+masterToggleBtn.Text = "F7LK SLANDER ONE TOP"
+masterToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+masterToggleBtn.Font = Enum.Font.SourceSansBold
+masterToggleBtn.TextSize = 13
+masterToggleBtn.Parent = screenGui
+
+local btnCorner = Instance.new("UICorner")
+btnCorner.CornerRadius = UDim.new(0, 8)
+btnCorner.Parent = masterToggleBtn
+
+local btnStroke = Instance.new("UIStroke")
+btnStroke.Thickness = 2
+btnStroke.Color = Color3.fromRGB(128, 0, 128)
+btnStroke.Parent = masterToggleBtn
+
+-- 2. القائمة الأولى (F7Lk SLANDER)
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 310, 0.85, 0)
+mainFrame.Position = UDim2.new(0.28, 0, 0.5, 0)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.BackgroundTransparency = 0.4
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+local uiCorner1 = Instance.new("UICorner")
+uiCorner1.CornerRadius = UDim.new(0, 16)
+uiCorner1.Parent = mainFrame
+
+local uiStroke1 = Instance.new("UIStroke")
+uiStroke1.Thickness = 3
+uiStroke1.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+uiStroke1.Color = Color3.fromRGB(0, 50, 150)
+uiStroke1.Parent = mainFrame
+
+local tweenInfoColor = TweenInfo.new(2.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true)
+local colorTween = TweenService:Create(uiStroke1, tweenInfoColor, {
+    Color = Color3.fromRGB(5, 5, 20)
+})
+colorTween:Play()
+
+local title1 = Instance.new("TextLabel")
+title1.Size = UDim2.new(1, -20, 0, 35)
+title1.Position = UDim2.new(0, 10, 0, 8)
+title1.BackgroundTransparency = 1
+title1.Text = "F7Lk SLANDER"
+title1.TextColor3 = Color3.fromRGB(255, 255, 255)
+title1.TextSize = 18
+title1.Font = Enum.Font.SourceSansBold
+title1.TextXAlignment = Enum.TextXAlignment.Left
+title1.Parent = mainFrame
+
+local scrollMain = Instance.new("ScrollingFrame")
+scrollMain.Size = UDim2.new(1, -16, 1, -55)
+scrollMain.Position = UDim2.new(0, 8, 0, 48)
+scrollMain.BackgroundTransparency = 1
+scrollMain.ScrollBarThickness = 4
+scrollMain.Parent = mainFrame
+
+local listLayout1 = Instance.new("UIListLayout")
+listLayout1.Padding = UDim.new(0, 8)
+listLayout1.Parent = scrollMain
+
+-- 3. القائمة الثانية (قائمة الخروج البنفسجية)
+local exitFrame = Instance.new("Frame")
+exitFrame.Name = "ExitFrame"
+exitFrame.Size = UDim2.new(0, 310, 0.85, 0)
+exitFrame.Position = UDim2.new(0.72, 0, 0.5, 0)
+exitFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+exitFrame.BackgroundColor3 = Color3.fromRGB(15, 5, 25)
+exitFrame.BackgroundTransparency = 0.35
+exitFrame.BorderSizePixel = 0
+exitFrame.Parent = screenGui
+
+local uiCorner2 = Instance.new("UICorner")
+uiCorner2.CornerRadius = UDim.new(0, 16)
+uiCorner2.Parent = exitFrame
+
+local uiStroke2 = Instance.new("UIStroke")
+uiStroke2.Thickness = 3
+uiStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+uiStroke2.Color = Color3.fromRGB(138, 43, 226)
+uiStroke2.Parent = exitFrame
+
+local colorTween2 = TweenService:Create(uiStroke2, tweenInfoColor, {
+    Color = Color3.fromRGB(50, 0, 80)
+})
+colorTween2:Play()
+
+local title2 = Instance.new("TextLabel")
+title2.Size = UDim2.new(1, 0, 0, 35)
+title2.BackgroundTransparency = 1
+title2.Text = "قائمة الخروج"
+title2.TextColor3 = Color3.fromRGB(200, 130, 255)
+title2.TextSize = 17
+title2.Font = Enum.Font.SourceSansBold
+title2.Parent = exitFrame
+
+local scrollExit = Instance.new("ScrollingFrame")
+scrollExit.Size = UDim2.new(1, -16, 1, -45)
+scrollExit.Position = UDim2.new(0, 8, 0, 40)
+scrollExit.BackgroundTransparency = 1
+scrollExit.ScrollBarThickness = 4
+scrollExit.Parent = exitFrame
+
+local listLayout2 = Instance.new("UIListLayout")
+listLayout2.Padding = UDim.new(0, 8)
+listLayout2.Parent = scrollExit
+
+-- الحركة والانزلاق
+local isOpen = true
+local posMainOpen = UDim2.new(0.28, 0, 0.5, 0)
+local posMainClosed = UDim2.new(0.28, 0, -0.6, 0)
+
+local posExitOpen = UDim2.new(0.72, 0, 0.5, 0)
+local posExitClosed = UDim2.new(0.72, 0, -0.6, 0)
+
+local slideInfo = TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+
+masterToggleBtn.MouseButton1Click:Connect(function()
+    isOpen = not isOpen
+    if isOpen then
+        TweenService:Create(mainFrame, slideInfo, {Position = posMainOpen}):Play()
+        TweenService:Create(exitFrame, slideInfo, {Position = posExitOpen}):Play()
+    else
+        TweenService:Create(mainFrame, slideInfo, {Position = posMainClosed}):Play()
+        TweenService:Create(exitFrame, slideInfo, {Position = posExitClosed}):Play()
+    end
+end)
+
+local function addExitLog(plrName, headshotUrl, finalTimeStr)
+    local logCard = Instance.new("Frame")
+    logCard.Size = UDim2.new(1, 0, 0, 55)
+    logCard.BackgroundColor3 = Color3.fromRGB(35, 10, 50)
+    logCard.BackgroundTransparency = 0.2
+    logCard.Parent = scrollExit
+
+    local cardCorner = Instance.new("UICorner")
+    cardCorner.CornerRadius = UDim.new(0, 8)
+    cardCorner.Parent = logCard
+
+    local cardStroke = Instance.new("UIStroke")
+    cardStroke.Thickness = 1.5
+    cardStroke.Color = Color3.fromRGB(160, 60, 240)
+    cardStroke.Parent = logCard
+
+    local userImage = Instance.new("ImageLabel")
+    userImage.Size = UDim2.new(0, 40, 0, 40)
+    userImage.Position = UDim2.new(0, 6, 0.5, -20)
+    userImage.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    userImage.Image = headshotUrl
+    userImage.Parent = logCard
+
+    local imgCorner = Instance.new("UICorner")
+    imgCorner.CornerRadius = UDim.new(0, 6)
+    imgCorner.Parent = userImage
+
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, -55, 1, 0)
+    textLabel.Position = UDim2.new(0, 52, 0, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = "السبك طلع مبين عليه جديد\n" .. plrName .. " | " .. finalTimeStr
+    textLabel.TextColor3 = Color3.fromRGB(230, 200, 255)
+    textLabel.TextSize = 12
+    textLabel.Font = Enum.Font.SourceSansBold
+    textLabel.TextXAlignment = Enum.TextXAlignment.Left
+    textLabel.Parent = logCard
+    
+    scrollExit.CanvasSize = UDim2.new(0, 0, 0, listLayout2.AbsoluteContentSize.Y)
+end
+
+-- بناء الـ 20 خانة للتتبع
+for i = 1, 20 do
+    local cardFrame = Instance.new("Frame")
+    cardFrame.Name = "Slot_" .. i
+    cardFrame.Size = UDim2.new(1, 0, 0, 60)
+    cardFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+    cardFrame.BackgroundTransparency = 0.3
+    cardFrame.Parent = scrollMain
+
+    local cardCorner = Instance.new("UICorner")
+    cardCorner.CornerRadius = UDim.new(0, 8)
+    cardCorner.Parent = cardFrame
+
+    local userImage = Instance.new("ImageLabel")
+    userImage.Size = UDim2.new(0, 45, 0, 45)
+    userImage.Position = UDim2.new(0, 6, 0.5, -22)
+    userImage.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    userImage.Image = "rbxassetid://0"
+    userImage.Parent = cardFrame
+
+    local imgCorner = Instance.new("UICorner")
+    imgCorner.CornerRadius = UDim.new(0, 6)
+    imgCorner.Parent = userImage
+
+    local inputName = Instance.new("TextBox")
+    inputName.Size = UDim2.new(0, 100, 0, 22)
+    inputName.Position = UDim2.new(0, 58, 0, 6)
+    inputName.PlaceholderText = "اكتب 3 أحرف..."
+    inputName.Text = ""
+    inputName.TextColor3 = Color3.fromRGB(255, 255, 255)
+    inputName.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    inputName.TextSize = 11
+    inputName.Parent = cardFrame
+
+    local inputCorner = Instance.new("UICorner")
+    inputCorner.CornerRadius = UDim.new(0, 4)
+    inputCorner.Parent = inputName
+
+    local fullNameLabel = Instance.new("TextLabel")
+    fullNameLabel.Size = UDim2.new(0, 130, 0, 20)
+    fullNameLabel.Position = UDim2.new(0, 165, 0, 7)
+    fullNameLabel.BackgroundTransparency = 1
+    fullNameLabel.Text = "---"
+    fullNameLabel.TextColor3 = Color3.fromRGB(0, 200, 255)
+    fullNameLabel.TextSize = 12
+    fullNameLabel.Font = Enum.Font.SourceSansBold
+    fullNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    fullNameLabel.Parent = cardFrame
+
+    local statsLabel = Instance.new("TextLabel")
+    statsLabel.Size = UDim2.new(1, -65, 0, 25)
+    statsLabel.Position = UDim2.new(0, 58, 0, 30)
+    statsLabel.BackgroundTransparency = 1
+    statsLabel.Text = "دخول: 0  |  خروج: 0   المدة: 00H 00m 00s"
+    statsLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    statsLabel.TextSize = 11
+    statsLabel.Font = Enum.Font.SourceSans
+    statsLabel.TextXAlignment = Enum.TextXAlignment.Left
+    statsLabel.Parent = cardFrame
+
+    -- بيانات التتبع الدقيقة
+    local targetUserId = nil
+    local targetName = ""
+    local joins = 0
+    local exits = 0
+    local timerSeconds = 0
+    local isTracking = false
+    local playerImgUrl = ""
+
+    -- البحث بالكتابة والتحديد عبر الـ UserId
+    inputName:GetPropertyChangedSignal("Text"):Connect(function()
+        local text = inputName.Text
+        if #text >= 3 then
+            for _, plr in ipairs(Players:GetPlayers()) do
+                if string.sub(string.lower(plr.Name), 1, #text) == string.lower(text) or string.sub(string.lower(plr.DisplayName), 1, #text) == string.lower(text) then
+                    targetUserId = plr.UserId
+                    targetName = plr.Name
+                    fullNameLabel.Text = plr.Name
+                    playerImgUrl = "https://www.roblox.com/headshot-thumbnail/image?userId=" .. plr.UserId .. "&width=420&height=420&format=png"
+                    userImage.Image = playerImgUrl
+                    
+                    joins = 0
+                    exits = 0
+                    timerSeconds = 0
+                    isTracking = true
+                    
+                    statsLabel.Text = "دخول: " .. joins .. "  |  خروج: " .. exits .. "   " .. formatTime(timerSeconds)
+                    break
+                end
+            end
+        end
+    end)
+
+    -- عداد الوقت المستمر
+    task.spawn(function()
+        while true do
+            task.wait(1)
+            if isTracking and targetUserId then
+                local plr = Players:GetPlayerByUserId(targetUserId)
+                if plr then
+                    timerSeconds = timerSeconds + 1
+                    statsLabel.Text = "دخول: " .. joins .. "  |  خروج: " .. exits .. "   " .. formatTime(timerSeconds)
+                end
+            end
+        end
+    end)
+
+    -- تتبع الخروج الدقيق بدلالة الـ UserId
+    Players.PlayerRemoving:Connect(function(plr)
+        if targetUserId and plr.UserId == targetUserId then
+            exits = exits + 1
+            isTracking = false
+            local frozenTimeStr = formatTime(timerSeconds)
+            statsLabel.Text = "دخول: " .. joins .. "  |  خروج: " .. exits .. "   " .. frozenTimeStr
+            
+            -- تسليط التوثيق على قائمة الخروج فوراً
+            addExitLog(plr.Name, playerImgUrl, frozenTimeStr)
+        end
+    end)
+
+    -- تتبع إعادة الدخول الدقيق بدلالة الـ UserId
+    Players.PlayerAdded:Connect(function(plr)
+        if targetUserId and plr.UserId == targetUserId then
+            joins = joins + 1
+            isTracking = true
+            statsLabel.Text = "دخول: " .. joins .. "  |  خروج: " .. exits .. "   " .. formatTime(timerSeconds)
+        end
+    end)
+end
+
+scrollMain.CanvasSize = UDim2.new(0, 0, 0, listLayout1.AbsoluteContentSize.Y)
