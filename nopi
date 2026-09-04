@@ -1,0 +1,166 @@
+-- SLANDER_RAKBHM / Red Rain Ultimate Extreme FPS Booster (Compact Size)
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+
+-- 1. الشاشة الرئيسية
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SLANDER_RAKBHM_AntiLag"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = game:GetService("CoreGui")
+
+-- 2. المستطيل الرئيسي (حجم أصغر ومدمج)
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 260, 0, 140)
+MainFrame.Position = UDim2.new(0.5, -130, 0.5, -70)
+MainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 12)
+MainCorner.Parent = MainFrame
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(100, 15, 15)
+MainStroke.Thickness = 1.5
+MainStroke.Parent = MainFrame
+
+-- 3. المطر الأحمر المتساقط
+local RainContainer = Instance.new("Frame")
+RainContainer.Size = UDim2.new(1, 0, 1, 0)
+RainContainer.BackgroundTransparency = 1
+RainContainer.Parent = MainFrame
+
+local function SpawnRainDrop()
+    local drop = Instance.new("Frame")
+    local startX = math.random(0, 260)
+    local dropLength = math.random(10, 20)
+    local dropSpeed = math.random(6, 12) / 10
+
+    drop.Size = UDim2.new(0, 2, 0, dropLength)
+    drop.Position = UDim2.new(0, startX, 0, -dropLength)
+    drop.BackgroundColor3 = Color3.fromRGB(220, 20, 40)
+    drop.BackgroundTransparency = math.random(3, 6) / 10
+    drop.BorderSizePixel = 0
+    drop.Parent = RainContainer
+
+    local gradient = Instance.new("UIGradient")
+    gradient.Rotation = 90
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 60, 60)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(120, 0, 0))
+    }
+    gradient.Parent = drop
+
+    local tweenInfo = TweenInfo.new(dropSpeed, Enum.EasingStyle.Linear)
+    local tween = TweenService:Create(drop, tweenInfo, {
+        Position = UDim2.new(0, startX - math.random(8, 15), 1, dropLength)
+    })
+
+    tween:Play()
+    tween.Completed:Connect(function()
+        drop:Destroy()
+    end)
+end
+
+task.spawn(function()
+    while MainFrame and MainFrame.Parent do
+        SpawnRainDrop()
+        task.wait(0.05)
+    end
+end)
+
+-- 4. النصوص داخل الشاشة (تم التعديل إلى SLANDER_RAKBHM)
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Size = UDim2.new(1, 0, 0, 30)
+TitleLabel.Position = UDim2.new(0, 0, 0.2, 0)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "SLANDER_RAKBHM"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 40, 40)
+TitleLabel.TextSize = 15
+TitleLabel.Font = Enum.Font.FredokaOne
+TitleLabel.Parent = MainFrame
+
+local StatusLabel = Instance.new("TextLabel")
+StatusLabel.Size = UDim2.new(1, 0, 0, 25)
+StatusLabel.Position = UDim2.new(0, 0, 0.55, 0)
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Text = "تم ازاله الاق بواسطه سلندر استمتع يا وحش "
+StatusLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+StatusLabel.TextSize = 11
+StatusLabel.Font = Enum.Font.SourceSansBold
+StatusLabel.Parent = MainFrame
+
+-- 5. خوارزمية التخفيف الأقصى (Ultimate Rendering Reduction)
+local function MaximizeFPS()
+    settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+    
+    Lighting.GlobalShadows = false
+    Lighting.FogEnd = 9e9
+    Lighting.ShadowSoftness = 0
+    Lighting.Brightness = 1
+
+    for _, v in pairs(Lighting:GetChildren()) do
+        if v:IsA("PostEffect") or v:IsA("Atmosphere") or v:IsA("Clouds") or v:IsA("SunRaysEffect") or v:IsA("Sky") then
+            v:Destroy()
+        end
+    end
+
+    if workspace.Terrain then
+        workspace.Terrain.WaterWaveSize = 0
+        workspace.Terrain.WaterWaveSpeed = 0
+        workspace.Terrain.WaterReflectance = 0
+        workspace.Terrain.WaterTransparency = 1
+    end
+
+    local function IsPlayerPart(obj)
+        for _, player in pairs(Players:GetPlayers()) do
+            if player.Character and obj:IsDescendantOf(player.Character) then
+                return true
+            end
+        end
+        return false
+    end
+
+    local function IsGround(obj)
+        local name = string.lower(obj.Name)
+        return name:find("baseplate") or name:find("ground") or name:find("floor") or obj == workspace.Terrain
+    end
+
+    local function PurgeObject(obj)
+        if obj:IsA("BasePart") or obj:IsA("MeshPart") or obj:IsA("UnionOperation") then
+            if IsPlayerPart(obj) or IsGround(obj) then
+                obj.Material = Enum.Material.SmoothPlastic
+                obj.Reflectance = 0
+                obj.CastShadow = false
+                obj.Transparency = 0
+            else
+                obj.Transparency = 1
+                obj.CastShadow = false
+            end
+        elseif obj:IsA("Decal") or obj:IsA("Texture") then
+            obj:Destroy()
+        elseif obj:IsA("ParticleEmitter") or obj:IsA("Trail") or obj:IsA("Smoke") or obj:IsA("Fire") or obj:IsA("Sparkles") or obj:IsA("Beam") then
+            obj.Enabled = false
+        elseif obj:IsA("Shirt") or obj:IsA("Pants") or obj:IsA("ShirtGraphic") then
+            obj:Destroy()
+        elseif obj:IsA("Sound") then
+            obj:Stop()
+        end
+    end
+
+    for _, item in pairs(workspace:GetDescendants()) do
+        pcall(PurgeObject, item)
+    end
+
+    workspace.DescendantAdded:Connect(function(newItem)
+        pcall(PurgeObject, newItem)
+    end)
+end
+
+pcall(MaximizeFPS)
